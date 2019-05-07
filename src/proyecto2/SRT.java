@@ -5,6 +5,7 @@
  */
 package proyecto2;
 
+import java.util.List;
 import javax.swing.JTextArea;
 
 /**
@@ -14,7 +15,7 @@ import javax.swing.JTextArea;
 public class SRT extends CPUScheduler{
 
     @Override
-    public void schedule(JTextArea log) {
+    public void schedule(List <JTextArea> logs) {
     }
     
 }

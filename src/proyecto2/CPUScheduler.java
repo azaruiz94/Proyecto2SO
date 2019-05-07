@@ -23,22 +23,30 @@ public abstract class CPUScheduler {
         this.reprogramados = new ArrayList<>();
     }
     
-    public abstract void schedule(JTextArea log);
+    public abstract void schedule(List <JTextArea> logs);
     
     public void addListaProcesos(BCP bcp){
         lista_procesos.add(bcp);
     }
     
-    public List getListaProcesos(){
+    public List<BCP> getListaProcesos(){
         return lista_procesos;
+    }
+    
+    public void removeFromListaProcesos(BCP bcp){
+       lista_procesos.remove(bcp);
     }
     
     public void addColaEspera(BCP bcp){
         cola_espera.add(bcp);
     }
     
-    public List getListaEspera(){
+    public List<BCP> getListaEspera(){
         return cola_espera;
+    }
+    
+    public void removeFromListaEspera(BCP bcp){
+       cola_espera.remove(bcp);
     }
     
     public void setProcesoActual(BCP bcp){
@@ -53,7 +61,7 @@ public abstract class CPUScheduler {
         finalizados.add(bcp);
     }
     
-    public List getListaFinalizados(){
+    public List<BCP> getListaFinalizados(){
         return finalizados;
     }
     
@@ -73,10 +81,20 @@ public abstract class CPUScheduler {
         return suma;
     }
     
+    public void incTime(){
+        
+        time++;
+    }
+    
+    public int getTime(){
+        return time;
+    }
+    private int time;
+    private BCP actual;
     private final List<BCP> lista_procesos;
     private final List<BCP> cola_espera;
-    private BCP actual;
     private final List<BCP> finalizados;
     private final List<BCP> reprogramados;
+    
     
 }

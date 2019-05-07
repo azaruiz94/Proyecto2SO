@@ -14,6 +14,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -51,7 +53,7 @@ public class MonitorUI extends JFrame{
     
     private void initComponents(){
 //        scheduler= new CPUScheduler();
-        
+        logs= new ArrayList<>();
         model = new DefaultTableModel(new String[]{ "Nombre", "T. Llegada", "T. CPU", "Prioridad"}, 0);
         cargarTabla("MisProcesos.txt");
         table= new JTable(model){
@@ -116,6 +118,11 @@ public class MonitorUI extends JFrame{
         options = new JComboBox(new String[]{"FCFS", "SJF", "RR"});
         options.setBounds(390, 420, 85, 20);
         
+        logs.add(process_log);
+        logs.add(ready_log);
+        logs.add(finished_log);
+        logs.add(rescheduled_log);
+        
         runBtn = new JButton("Run");
         runBtn.setBounds(390, 450, 85, 25);
         runBtn.addActionListener(new ActionListener() {
@@ -142,7 +149,9 @@ public class MonitorUI extends JFrame{
                         return;
                 }
                 cargarListaProcesos(scheduler);
-                scheduler.schedule(process_log);
+                scheduler.schedule(logs);
+                //t1= new Thread((Runnable) scheduler);
+                //t1.start();
             }
         });
         mainPanel= new JPanel(null);
@@ -202,6 +211,14 @@ public class MonitorUI extends JFrame{
         }
     }
     
+    private void updateProcessLog(CPUScheduler scheduler){
+        int pos = process_log.getCaretPosition();
+        for(BCP bcp: scheduler.getListaEspera()){
+            process_log.insert("t= "+ scheduler.getTime() +" Ejecutando proceso: "+ bcp.getNombre() + " CCPU:" + bcp.getCantRafagas()+"\n", pos);
+        }
+        
+    }
+    
     private final int HEIGHT= 500;
     private final int WIDTH= 1000;
     private JTable table;
@@ -225,4 +242,6 @@ public class MonitorUI extends JFrame{
     private JButton runBtn;
     private JComboBox options;
     private DefaultTableModel model;
+    private List<JTextArea> logs;
+    private Thread t1;
 }
