@@ -18,7 +18,6 @@ public abstract class CPUScheduler {
     public CPUScheduler(){
         this.lista_procesos = new ArrayList<>();
         this.cola_espera = new ArrayList<>();
-        this.actual = new BCP();
         this.finalizados = new ArrayList<>();
         this.reprogramados = new ArrayList<>();
     }
@@ -49,14 +48,6 @@ public abstract class CPUScheduler {
        cola_espera.remove(bcp);
     }
     
-    public void setProcesoActual(BCP bcp){
-        actual= bcp;
-    }
-    
-    public BCP getProcesoActual(){
-        return actual;
-    }
-    
     public void addListaFinalizados(BCP bcp){
         finalizados.add(bcp);
     }
@@ -82,7 +73,6 @@ public abstract class CPUScheduler {
     }
     
     public void incTime(){
-        
         time++;
     }
     
@@ -90,7 +80,6 @@ public abstract class CPUScheduler {
         return time;
     }
     private int time;
-    private BCP actual;
     private final List<BCP> lista_procesos;
     private final List<BCP> cola_espera;
     private final List<BCP> finalizados;

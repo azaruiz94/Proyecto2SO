@@ -5,7 +5,6 @@
  */
 package proyecto2;
 
-import java.awt.TextArea;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,33 +25,21 @@ public class FCFS extends CPUScheduler implements Runnable{
 
     @Override
     public void run() {
-        int pos0, pos1, pos2, pos3;
+        int cpu_txtarea=0;
+        int fin_txtarea=2;
         List<BCP> sorted_list= this.getListaProcesos();
         Collections.sort(sorted_list);
         try {
             for(BCP bcp: sorted_list){
-                
-                //t=0
-                /*if(this.getTime() >= bcp.getTiempoLlegada()){
-                   this.addColaEspera(bcp);
-                   //Collections.sort(sorted_list);
-                }*/
-                //System.out.println(this.getListaEspera()+"\n");
-                
                 for(int i=bcp.getCantRafagas(); i>0; i--){
-                    //System.out.println("t= "+ getTime() +" Ejecutando proceso: " + bcp.getNombre() + " CCPU:" + bcp.getCantRafagas()+"\n");
                     updateReadyList(sorted_list);
-                    pos0 = _logs.get(0).getCaretPosition();
-                    _logs.get(0).insert("t= "+ getTime() +" Ejecutando proceso: "+ bcp.getNombre() + " CCPU:" + bcp.getCantRafagas()+"\n", pos0);
+                    showLogMessage("t= "+ getTime() +" Ejecutando proceso: "+ bcp.getNombre() + " CCPU:" + bcp.getCantRafagas()+"\n", cpu_txtarea);
                     bcp.decrementarRafaga();
                     Thread.sleep(1000);
                     this.incTime();
                 }
-                //System.out.println(this.getListaEspera()+"\n");
                 this.addListaFinalizados(bcp);
-                pos2 = _logs.get(2).getCaretPosition();
-                _logs.get(2).insert(bcp.getNombre()+ ", "+ bcp.getCantRafagas()+ "\n", pos2 );
-                //this.removeFromListaEspera(bcp);
+                showLogMessage(bcp.getNombre()+ ", "+ bcp.getCantRafagas()+ "\n", fin_txtarea);
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(FCFS.class.getName()).log(Level.SEVERE, null, ex);
@@ -64,23 +51,24 @@ public class FCFS extends CPUScheduler implements Runnable{
      * @param lista_procesos
      * @return 
      */
-    private void updateReadyList(List<BCP> lista_procesos){
-        int pos;
+    private List<BCP> updateReadyList(List<BCP> lista_procesos){
+        int ready_textarea= 1;
         for(BCP ready: lista_procesos){
             if(this.getTime() >= ready.getTiempoLlegada() && !this.getListaEspera().contains(ready)){
                 this.addColaEspera(ready);
-                //this.removeFromListaProcesos(ready);
-                pos = _logs.get(1).getCaretPosition();
-                _logs.get(1).insert(ready.getNombre()+ ", "+ ready.getCantRafagas()+ "\n", pos );
+                showLogMessage(ready.getNombre()+ ", "+ ready.getCantRafagas()+ "\n", ready_textarea);
             }
         }
         Collections.sort(this.getListaEspera());
-
-        
-        //System.out.println(this.getListaEspera()+"\n");
-        //return this.getListaEspera();
+        return this.getListaEspera();
     }
     
-    Thread t1= new Thread(this);
-    List<JTextArea> _logs;
+    private void showLogMessage(String msg, int textArea){
+        int pos;
+        pos = _logs.get(textArea).getCaretPosition();
+        _logs.get(textArea).insert(msg, pos);
+    }
+    
+    private Thread t1= new Thread(this);
+    private List<JTextArea> _logs;
 }

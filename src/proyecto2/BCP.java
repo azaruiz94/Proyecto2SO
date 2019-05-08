@@ -10,9 +10,6 @@ package proyecto2;
  * @author usuario
  */
 public class BCP implements Comparable<BCP>{
-    public BCP(){
-        
-    }
     
     public BCP(String nombre, int t_llegada, int cant_rafagas, int prioridad){
         _nombre= nombre;
@@ -45,11 +42,6 @@ public class BCP implements Comparable<BCP>{
         return _prioridad;
     }
 
-    private String _nombre;
-    private int _t_llegada;
-    private int _cant_rafagas;
-    private int _prioridad;
-
     @Override
     public int compareTo(BCP o) {
         return this.getTiempoLlegada().compareTo(o.getTiempoLlegada());
@@ -59,4 +51,9 @@ public class BCP implements Comparable<BCP>{
     public String toString() {
         return "Proceso: " + this.getNombre() +" llegada: " + this.getTiempoLlegada();
     }
+    
+    private String _nombre;
+    private int _t_llegada;
+    private int _cant_rafagas;
+    private int _prioridad;
 }
