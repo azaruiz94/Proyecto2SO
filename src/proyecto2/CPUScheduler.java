@@ -79,11 +79,18 @@ public abstract class CPUScheduler {
     public int getTime(){
         return time;
     }
+    
+    public int getCiclo(){
+        return ciclo;
+    }
+    
+    public void setCiclo(int valor){
+        ciclo=valor;
+    }
     private int time;
+    private int ciclo;
     private final List<BCP> lista_procesos;
     private final List<BCP> cola_espera;
     private final List<BCP> finalizados;
     private final List<BCP> reprogramados;
-    
-    
 }

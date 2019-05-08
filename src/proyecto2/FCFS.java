@@ -35,7 +35,7 @@ public class FCFS extends CPUScheduler implements Runnable{
                     updateReadyList(sorted_list);
                     showLogMessage("t= "+ getTime() +" Ejecutando proceso: "+ bcp.getNombre() + " CCPU:" + bcp.getCantRafagas()+"\n", cpu_txtarea);
                     bcp.decrementarRafaga();
-                    Thread.sleep(1000);
+                    Thread.sleep(this.getCiclo());
                     this.incTime();
                 }
                 this.addListaFinalizados(bcp);

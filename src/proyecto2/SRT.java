@@ -12,10 +12,19 @@ import javax.swing.JTextArea;
  *
  * @author usuario
  */
-public class SRT extends CPUScheduler{
+public class SRT extends CPUScheduler implements Runnable{
 
     @Override
     public void schedule(List <JTextArea> logs) {
+        t1.start();
+        _logs= logs;
     }
     
+    @Override
+    public void run() {
+        
+    }
+    
+    private Thread t1= new Thread(this);
+    private List<JTextArea> _logs;
 }

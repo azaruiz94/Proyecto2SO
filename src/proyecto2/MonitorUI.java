@@ -22,11 +22,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -114,6 +116,11 @@ public class MonitorUI extends JFrame{
         rescheduledPane.setBorder(rescheduledBorder);
         rescheduledPane.setBounds(800, 25, 150, 385);
         
+        ciclos_lbl = new JLabel("Ciclo de proceso en ms:");
+        ciclos_lbl.setBounds(25, 420, 180, 25);
+        ciclos_field = new JTextField();
+        ciclos_field.setBounds(150, 420, 180, 25);
+        ciclos_field.setText("1000");
         
         options = new JComboBox(new String[]{"FCFS", "SJF", "RR"});
         options.setBounds(390, 420, 85, 20);
@@ -149,9 +156,8 @@ public class MonitorUI extends JFrame{
                         return;
                 }
                 cargarListaProcesos(scheduler);
+                scheduler.setCiclo(Integer.parseInt(ciclos_field.getText()));
                 scheduler.schedule(logs);
-                //t1= new Thread((Runnable) scheduler);
-                //t1.start();
             }
         });
         mainPanel= new JPanel(null);
@@ -163,6 +169,8 @@ public class MonitorUI extends JFrame{
         mainPanel.add(addBtn);
         mainPanel.add(removeBtn);
         mainPanel.add(processPane);
+        mainPanel.add(ciclos_lbl);
+        mainPanel.add(ciclos_field);
         mainPanel.add(options);
         mainPanel.add(runBtn);
     }
@@ -211,14 +219,6 @@ public class MonitorUI extends JFrame{
         }
     }
     
-    private void updateProcessLog(CPUScheduler scheduler){
-        int pos = process_log.getCaretPosition();
-        for(BCP bcp: scheduler.getListaEspera()){
-            process_log.insert("t= "+ scheduler.getTime() +" Ejecutando proceso: "+ bcp.getNombre() + " CCPU:" + bcp.getCantRafagas()+"\n", pos);
-        }
-        
-    }
-    
     private final int HEIGHT= 500;
     private final int WIDTH= 1000;
     private JTable table;
@@ -241,6 +241,8 @@ public class MonitorUI extends JFrame{
     private JButton removeBtn;
     private JButton runBtn;
     private JComboBox options;
+    private JLabel ciclos_lbl;
+    private JTextField ciclos_field;
     private DefaultTableModel model;
     private List<JTextArea> logs;
     private Thread t1;
