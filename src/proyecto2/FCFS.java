@@ -19,20 +19,42 @@ public class FCFS extends CPUScheduler implements Runnable{
     
     @Override
     public void schedule(List<JTextArea> logs) {
-        t1.start();
         _logs= logs;
+        t1.start();
     }
 
     @Override
     public void run() {
         int cpu_txtarea=0;
         int fin_txtarea=2;
-        List<BCP> sorted_list= this.getListaProcesos();
-        Collections.sort(sorted_list);
-        try {
+        BCP bcp;
+        List<BCP> lista_procesos= this.getListaProcesos();
+        List<BCP> lista_espera= this.getListaEspera();
+        Collections.sort(lista_procesos);
+        updateReadyList(lista_procesos);
+        while(!lista_espera.isEmpty()){
+            bcp= getFirst(lista_espera);
+            for(int i=bcp.getCantRafagas(); i>0; i--){
+                updateReadyList(lista_procesos);
+                updateListaProcesos(lista_espera);
+                showLogMessage("t= "+ getTime() +" Ejecutando proceso: "+ bcp.getNombre() + " CCPU:" + bcp.getCantRafagas()+"\n", cpu_txtarea);
+                bcp.decrementarRafaga();
+                try {
+                    Thread.sleep(this.getCiclo());
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(FCFS.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                this.incTime();
+            }
+            this.addListaFinalizados(bcp);
+            showLogMessage(bcp.getNombre()+ ", "+ bcp.getCantRafagas()+ "\n", fin_txtarea);
+            removeFromListaEspera(bcp);
+        }
+        /*try {
             for(BCP bcp: sorted_list){
                 for(int i=bcp.getCantRafagas(); i>0; i--){
                     updateReadyList(sorted_list);
+                    updateListaProcesos(sorted_list);
                     showLogMessage("t= "+ getTime() +" Ejecutando proceso: "+ bcp.getNombre() + " CCPU:" + bcp.getCantRafagas()+"\n", cpu_txtarea);
                     bcp.decrementarRafaga();
                     Thread.sleep(this.getCiclo());
@@ -43,7 +65,13 @@ public class FCFS extends CPUScheduler implements Runnable{
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(FCFS.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
+    }
+    
+    private BCP getFirst(List<BCP> lista_espera){
+        BCP first= lista_espera.get(0);
+        System.out.println(first);
+        return first;
     }
     
     /**
@@ -61,6 +89,12 @@ public class FCFS extends CPUScheduler implements Runnable{
         }
         Collections.sort(this.getListaEspera());
         return this.getListaEspera();
+    }
+    
+    private void updateListaProcesos(List<BCP> lista_espera){
+        for(BCP bcp: lista_espera){
+            this.removeFromListaProcesos(bcp);
+        }
     }
     
     private void showLogMessage(String msg, int textArea){

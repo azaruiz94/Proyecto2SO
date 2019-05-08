@@ -5,9 +5,7 @@
  */
 package proyecto2;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -70,6 +68,22 @@ public class MonitorUI extends JFrame{
         tableBorder= BorderFactory.createTitledBorder("Lista de Procesos");
         tablePane.setBorder(tableBorder);
         tablePane.setBounds(25, 25, 450, 250);
+        
+        
+        sendBtn= new JButton("Enviar");
+        sendBtn.setBounds(25, 280, 85, 25);
+        sendBtn.setVisible(false);
+        sendBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = table.getSelectedRow();
+                String nombre = (String) model.getValueAt(row, 0);
+                int ccpu = Integer.parseInt((String) model.getValueAt(row, 2));
+                int prioridad= Integer.parseInt((String) model.getValueAt(row, 3));
+                System.out.println(nombre + " "+ scheduler.getTime()+ " " + ccpu+ " " + prioridad );
+                scheduler.addListaProcesos(new BCP(nombre, scheduler.getTime(), ccpu, prioridad));
+             }
+        });
         
         addBtn = new JButton("Agregar");
         addBtn.setBounds(300, 280, 85, 25);
@@ -135,7 +149,10 @@ public class MonitorUI extends JFrame{
         runBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CPUScheduler scheduler= null;
+                sendBtn.setVisible(true);
+                process_log.setText("");
+                ready_log.setText("");
+                finished_log.setText("");
                 String eleccion= (String) options.getSelectedItem();
                 switch(eleccion){
                     case "FCFS":
@@ -173,6 +190,7 @@ public class MonitorUI extends JFrame{
         mainPanel.add(ciclos_field);
         mainPanel.add(options);
         mainPanel.add(runBtn);
+        mainPanel.add(sendBtn);
     }
     
     /**
@@ -205,10 +223,9 @@ public class MonitorUI extends JFrame{
     public void cargarListaProcesos(CPUScheduler scheduler){
         for (int i = 0; i < model.getRowCount(); i++){
             String nombre = (String) model.getValueAt(i, 0);
-            //deberia guardar el tiempo de llegada del nuevo proceso que se agrega desde la UI
             int llegada;
             if((String)model.getValueAt(i, 1) == "-"){
-                llegada = 5;
+                llegada = scheduler.getTime();
             }else{
                 llegada = Integer.parseInt((String) model.getValueAt(i, 1));
             }
@@ -240,10 +257,14 @@ public class MonitorUI extends JFrame{
     private JButton addBtn;
     private JButton removeBtn;
     private JButton runBtn;
+    private JButton sendBtn;
     private JComboBox options;
     private JLabel ciclos_lbl;
     private JTextField ciclos_field;
     private DefaultTableModel model;
     private List<JTextArea> logs;
+    private String send_nombre;
+    private int send_ccpu, send_prioridad;
+    private CPUScheduler scheduler;
     private Thread t1;
 }

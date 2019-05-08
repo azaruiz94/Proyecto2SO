@@ -49,7 +49,7 @@ public class BCP implements Comparable<BCP>{
     
     @Override
     public String toString() {
-        return "Proceso: " + this.getNombre() +" llegada: " + this.getTiempoLlegada();
+        return "proceso: " + this.getNombre() +" llegada: " + this.getTiempoLlegada() +" ccpu: " + this.getCantRafagas();
     }
     
     private String _nombre;
